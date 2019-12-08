@@ -98,7 +98,7 @@ public class Actividad {
         this.key = key;
         String DIA[] = {"Domingo", "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado"};
         iniciado = new Date();
-        iniciadoDia = DIA[LocalDate.now().getDayOfWeek().getValue()];
+        iniciadoDia = DIA[LocalDate.now().getDayOfWeek().getValue() - 1];
 
         config.set(key + ".iniciado", new SimpleDateFormat("dd/MM/yyyy hh:mm:ss").format(iniciado));
         config.set(key + ".iniciadoDia", iniciadoDia);
@@ -160,7 +160,7 @@ public class Actividad {
 
         String DIA[] = {"Domingo", "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado"};
         terminado = new Date();
-        terminadoDia = DIA[LocalDate.now().getDayOfWeek().getValue()];
+        terminadoDia = DIA[LocalDate.now().getDayOfWeek().getValue() - 1];
 
         Duration duration = Duration.ofMillis(-tiempo);
         long hours = duration.toHours();
