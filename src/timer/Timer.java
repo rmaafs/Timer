@@ -1041,6 +1041,8 @@ public class Timer extends javax.swing.JFrame {
         pActual = p;
         txtProyecto.setText(pActual.getFullFormato());
         txtActividades.setText("Ninguna actividad seleccionada");
+        refreshReloj(0);
+        txtGanancia.setText("$0");
     }//GEN-LAST:event_btnCargarActionPerformed
 
     private void btnCargarActActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCargarActActionPerformed

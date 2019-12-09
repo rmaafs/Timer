@@ -96,7 +96,7 @@ public class Actividad {
     public Actividad(String key, int id, FileConfiguration config) throws Exception {
         this.id = id;
         this.key = key;
-        String DIA[] = {"Domingo", "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado"};
+        String DIA[] = {"Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado", "Domingo"};
         iniciado = new Date();
         iniciadoDia = DIA[LocalDate.now().getDayOfWeek().getValue() - 1];
 
@@ -158,7 +158,7 @@ public class Actividad {
             return;
         }
 
-        String DIA[] = {"Domingo", "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado"};
+        String DIA[] = {"Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado", "Domingo"};
         terminado = new Date();
         terminadoDia = DIA[LocalDate.now().getDayOfWeek().getValue() - 1];
 
