@@ -118,18 +118,7 @@ public class Timer extends javax.swing.JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 long runningTime = System.currentTimeMillis() - lastTickTime;
-                Duration duration = Duration.ofMillis(runningTime);
-                long hours = duration.toHours();
-                duration = duration.minusHours(hours);
-                long minutes = duration.toMinutes();
-                duration = duration.minusMinutes(minutes);
-                long millis = duration.toMillis();
-                long seconds = millis / 1000;
-                millis -= (seconds * 1000);
-                txtTiempo.setText(String.format("%02d:%02d:%02d", hours, minutes, seconds, millis));
-                float total = ((float) hours + ((float) minutes / 60) + ((float) seconds / 60 / 60)) * TARIFA;
-
-                txtGanancia.setText("$" + String.format("%.2f", total));
+                refreshReloj(runningTime);
             }
         });
     }
@@ -1381,6 +1370,8 @@ public class Timer extends javax.swing.JFrame {
         long seconds = millis / 1000;
         millis -= (seconds * 1000);
         txtTiempo.setText(String.format("%02d:%02d:%02d", hours, minutes, seconds, millis));
+        float total = ((float) hours + ((float) minutes / 60) + ((float) seconds / 60 / 60)) * TARIFA;
+        txtGanancia.setText("$" + String.format("%.2f", total));
     }
 
     private void guardarActividad() {
