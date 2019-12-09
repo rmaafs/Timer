@@ -982,16 +982,18 @@ public class Timer extends javax.swing.JFrame {
     }//GEN-LAST:event_btnComenzarActionPerformed
 
     private void btnPausarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPausarActionPerformed
-        timer.stop();
-        timeCuandoSePauso = System.currentTimeMillis();
-        tiempoPausado = lastTickTime - System.currentTimeMillis();
-        txtStatus.setText("PAUSADO");
-        pausado = true;
-        setScreenPaused();
+        if (!pausado) {
+            timer.stop();
+            timeCuandoSePauso = System.currentTimeMillis();
+            tiempoPausado = lastTickTime - System.currentTimeMillis();
+            txtStatus.setText("PAUSADO");
+            pausado = true;
+            setScreenPaused();
 
-        aActual.addPaused(config);
+            aActual.addPaused(config);
 
-        guardarActividad();
+            guardarActividad();
+        }
     }//GEN-LAST:event_btnPausarActionPerformed
 
     private void btnReiniciarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReiniciarActionPerformed
