@@ -57,8 +57,17 @@ public class Timer extends javax.swing.JFrame {
                 if (preguntar("¿Quieres dejar una nota para recordarte la próxima vez?", "Recordatorio")) {
                     String txt = JOptionPane.showInputDialog("Recordatorio");
                     config.set("ultimo.recordatorio", txt);
-                    guardarActividad();
                 }
+                if (!pausado) {
+                    timer.stop();
+                    timeCuandoSePauso = System.currentTimeMillis();
+                    tiempoPausado = lastTickTime - System.currentTimeMillis();
+                    txtStatus.setText("PAUSADO");
+                    pausado = true;
+                    setScreenPaused();
+                }
+
+                guardarActividad();
             }
         });
 
