@@ -44,6 +44,7 @@ public class Actividad {
     Acciones acciones;
     Datos datos;
     float ganancia = 0f;
+    String linkPrincipal = "";
 
     public Actividad(String key, String act, FileConfiguration config) throws Exception {
         crearInstancias(key, act, config);
@@ -155,8 +156,13 @@ public class Actividad {
 
     public void finish(FileConfiguration config) {
         finalizado = true;
-        mensaje = Arrays.asList(textAreaDialog(null, "", "Título: " + id).split("\n"));
-        descripcion = Arrays.asList(textAreaDialog(null, "", "Descripción: " + id + "").split("\n"));
+        if (mensaje.isEmpty() || mensaje.get(0).equals("")) {
+            mensaje = Arrays.asList(textAreaDialog(null, "", "Mensaje: " + id).split("\n"));
+        }
+        
+        if (descripcion.isEmpty() || descripcion.get(0).equals("")) {
+            descripcion = Arrays.asList(textAreaDialog(null, "", "Descripción: " + id + "").split("\n"));
+        }
 
         if (mensaje == null || descripcion == null) {
             return;
@@ -217,12 +223,14 @@ public class Actividad {
 
         String str = "";
         String barra = "\n\n-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~\n\n";
-        String link = JOptionPane.showInputDialog("Dame el link principal donde se verán los cambios:");
+        if (linkPrincipal.equals("")) {
+            linkPrincipal = JOptionPane.showInputDialog("Dame el link principal donde se verán los cambios:");
+        }
 
         for (String s : mensaje) {
             str += s + "\n\n";
         }
-        str += "- " + link;
+        str += "- " + linkPrincipal;
         str += barra;
 
         str += "Descripción:";
