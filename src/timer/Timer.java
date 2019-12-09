@@ -1104,12 +1104,16 @@ public class Timer extends javax.swing.JFrame {
             msg("Necesitas tener pausado el tiempo para terminar la actividad.");
             return;
         }
+        boolean yaTerminado = aActual.terminado != null;
         aActual.finish(config);
-        quincena += aActual.getGanancia();
-        config.set("quincena", quincena);
+        if (!yaTerminado) {
+            quincena += aActual.getGanancia();
+            config.set("quincena", quincena);
+            txtTotalGanancia.setText("$" + String.format("%.2f", quincena));
+        }
         saveFile();
-        txtTotalGanancia.setText("$" + String.format("%.2f", quincena));
         msg("Actividad " + aActual.id + " finalizada.");
+        btnTerminarActividad.setText("TERMINADO");
     }//GEN-LAST:event_btnTerminarActividadActionPerformed
 
     private void brnArchivosCreadosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_brnArchivosCreadosActionPerformed
@@ -1322,9 +1326,11 @@ public class Timer extends javax.swing.JFrame {
         txtDatosCreados.setText(aActual.datos.getCreados() + "");
         txtDatosEditados.setText(aActual.datos.getEditados() + "");
         txtDatosEliminados.setText(aActual.datos.getEliminados() + "");
-        
+
         if (a.terminado != null) {
             btnTerminarActividad.setText("TERMINADO");
+        } else {
+            btnTerminarActividad.setText("Terminar actividad");
         }
 
         Duration duration = Duration.ofMillis(-tiempoPausado);
