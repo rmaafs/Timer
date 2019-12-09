@@ -1322,6 +1322,10 @@ public class Timer extends javax.swing.JFrame {
         txtDatosCreados.setText(aActual.datos.getCreados() + "");
         txtDatosEditados.setText(aActual.datos.getEditados() + "");
         txtDatosEliminados.setText(aActual.datos.getEliminados() + "");
+        
+        if (a.terminado != null) {
+            btnTerminarActividad.setText("TERMINADO");
+        }
 
         Duration duration = Duration.ofMillis(-tiempoPausado);
         long hours = duration.toHours();
