@@ -350,7 +350,7 @@ public class Actividad {
             minutos = 0;
             horas++;
         }
-        str += "- " + (horas > 0 ? horas + "h " : "") + minutos + "m / (Sin redondear " + (hours > 0 ? hours + "h " : "") + minutes + "m)";
+        str += "- " + (horas > 0 ? horas + "h " : "") + (minutos > 0 ? minutos + "m" : "") + " / (Sin redondear " + (hours > 0 ? hours + "h " : "") + minutes + "m)";
 
         return str;
     }
