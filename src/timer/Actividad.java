@@ -198,6 +198,8 @@ public class Actividad {
         if (minutosp > 30) {
             minutosp = 0;
             horasp++;
+        } else {
+            minutosp = 30;
         }
 
         ganancia = TARIFA * (horasp + (minutosp / 60.00f));

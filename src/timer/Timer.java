@@ -1102,7 +1102,7 @@ public class Timer extends javax.swing.JFrame {
             msg("Necesitas tener pausado el tiempo para terminar la actividad.");
             return;
         }
-        boolean yaTerminado = aActual.terminado != null;
+        boolean yaTerminado = aActual.finalizado;
         aActual.finish(config);
         if (!yaTerminado) {
             quincena += aActual.getGanancia();
