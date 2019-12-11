@@ -162,7 +162,7 @@ public class Actividad {
         if (mensaje.isEmpty() || mensaje.get(0).equals("")) {
             mensaje = Arrays.asList(textAreaDialog(null, "", "Mensaje: " + id).split("\n"));
         }
-        
+
         if (descripcion.isEmpty() || descripcion.get(0).equals("")) {
             descripcion = Arrays.asList(textAreaDialog(null, "", "Descripción: " + id + "").split("\n"));
         }
@@ -189,8 +189,11 @@ public class Actividad {
 
         config.set(key + "mensaje", mensaje);
         config.set(key + "descripcion", descripcion);
-        config.set(key + "terminado", new SimpleDateFormat("dd/MM/yyyy hh:mm:ss").format(terminado));
-        config.set(key + "terminadoDia", terminadoDia);
+        if (!config.contains(key + "terminado")) {
+            config.set(key + "terminado", new SimpleDateFormat("dd/MM/yyyy hh:mm:ss").format(terminado));
+            config.set(key + "terminadoDia", terminadoDia);
+        }
+
         config.set(key + "finalizado", finalizado);
         config.set(key + "segundos", segundos);
         config.set(key + "minutos", minutos);
