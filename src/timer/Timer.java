@@ -1345,17 +1345,7 @@ public class Timer extends javax.swing.JFrame {
             btnTerminarActividad.setText("Terminar actividad");
         }
 
-        Duration duration = Duration.ofMillis(-tiempoPausado);
-        long hours = duration.toHours();
-        duration = duration.minusHours(hours);
-        long minutes = duration.toMinutes();
-        duration = duration.minusMinutes(minutes);
-        long millis = duration.toMillis();
-        long seconds = millis / 1000;
-        millis -= (seconds * 1000);
-        txtTiempo.setText(String.format("%02d:%02d:%02d", hours, minutes, seconds, millis));
-        float total = ((float) hours + ((float) minutes / 60) + ((float) seconds / 60 / 60)) * TARIFA;
-        txtGanancia.setText("$" + String.format("%.2f", total));
+        refreshReloj(-tiempoPausado);
     }
 
     private boolean validarProyectoSeleccionado() {
@@ -1396,7 +1386,7 @@ public class Timer extends javax.swing.JFrame {
         }
         float totalRedondeado = TARIFA * (horasp + (minutosp / 60.00f));
 
-        txtGanancia.setText("$" + String.format("%.2f", totalRedondeado) + " ($" + String.format("%.2f", total) + ")");
+        txtGanancia.setText("$" + String.format("%.2f", total) + " ($" + String.format("%.2f", totalRedondeado) + ")");
     }
 
     private void guardarActividad() {
