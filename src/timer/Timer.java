@@ -1106,17 +1106,16 @@ public class Timer extends javax.swing.JFrame {
             return;
         }
         List<String> acts = new ArrayList<>();
-        boolean yaTerminado = aActual.finalizado;
-        if (yaTerminado && config.contains("quincena.actividades")) {
+        if (config.contains("quincena.actividades")) {
             acts.addAll(config.getStringList("quincena.actividades"));
-            if (acts.contains(aActual.id + "")) {
+            if (acts.contains(pActual.nombre + "/" + aActual.id)) {
                 quincena -= aActual.getGanancia();
-                acts.remove(aActual.id + "");
+                acts.remove(pActual.nombre + "/" + aActual.id);
             }
         }
 
         aActual.finish(config);
-        acts.add(aActual.id + "");
+        acts.add(pActual.nombre + "/" + aActual.id);
 
         quincena += aActual.getGanancia();
         config.set("quincena.total", quincena);

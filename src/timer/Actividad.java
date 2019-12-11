@@ -99,6 +99,9 @@ public class Actividad {
         if (config.contains(key + "descripcion")) {
             descripcion = config.getStringList(key + "descripcion");
         }
+        if (config.contains(key + "ganado")) {
+            ganancia = (float) config.getDouble(key + "ganado");
+        }
 
         pausas = new Pausa(key + "pausa.", config);
         archivos = new Archivos(key + "archivo.", config);
