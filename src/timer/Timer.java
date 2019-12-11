@@ -27,6 +27,8 @@ import java.awt.datatransfer.Clipboard;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Timer extends javax.swing.JFrame {
 
@@ -103,8 +105,8 @@ public class Timer extends javax.swing.JFrame {
             }
 
         }
-        if (config.contains("ultimo")) {
-            quincena = (float) config.getDouble("quincena");
+        if (config.contains("quincena")) {
+            quincena = (float) config.getDouble("quincena.total");
         }
 
         //pActual.cargar(actividades, config);
@@ -1094,6 +1096,7 @@ public class Timer extends javax.swing.JFrame {
         boolean segundos = input.contains("s");
         int num = Integer.valueOf(input.replaceAll("s", ""));
         tiempoPausado -= segundos ? (num * 1000) : (num * 1000 * 60);
+        aActual.tiempo = tiempoPausado;
         refreshReloj(-tiempoPausado);
     }//GEN-LAST:event_btnCambiarTiempoActionPerformed
 
@@ -1102,13 +1105,24 @@ public class Timer extends javax.swing.JFrame {
             msg("Necesitas tener pausado el tiempo para terminar la actividad.");
             return;
         }
+        List<String> acts = new ArrayList<>();
         boolean yaTerminado = aActual.finalizado;
-        aActual.finish(config);
-        if (!yaTerminado) {
-            quincena += aActual.getGanancia();
-            config.set("quincena", quincena);
-            txtTotalGanancia.setText("$" + String.format("%.2f", quincena));
+        if (yaTerminado && config.contains("quincena.actividades")) {
+            acts.addAll(config.getStringList("quincena.actividades"));
+            if (acts.contains(aActual.id + "")) {
+                quincena -= aActual.getGanancia();
+                acts.remove(aActual.id + "");
+            }
         }
+
+        aActual.finish(config);
+        acts.add(aActual.id + "");
+
+        quincena += aActual.getGanancia();
+        config.set("quincena.total", quincena);
+        config.set("quincena.actividades", acts);
+        txtTotalGanancia.setText("$" + String.format("%.2f", quincena));
+
         saveFile();
         msg("Actividad " + aActual.id + " finalizada.");
         btnTerminarActividad.setText("TERMINADO");
@@ -1225,7 +1239,8 @@ public class Timer extends javax.swing.JFrame {
     private void btnReiniciarQuincenaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReiniciarQuincenaActionPerformed
         if (preguntar("¿Estas seguro de reiniciar esta quincena?", "")) {
             quincena = 0;
-            config.set("quincena", quincena);
+            config.set("quincena.total", quincena);
+            config.set("quincena.actividades", null);
             saveFile();
             txtTotalGanancia.setText("$" + quincena);
         }
@@ -1371,7 +1386,18 @@ public class Timer extends javax.swing.JFrame {
         millis -= (seconds * 1000);
         txtTiempo.setText(String.format("%02d:%02d:%02d", hours, minutes, seconds, millis));
         float total = ((float) hours + ((float) minutes / 60) + ((float) seconds / 60 / 60)) * TARIFA;
-        txtGanancia.setText("$" + String.format("%.2f", total));
+
+        float horasp = hours;
+        float minutosp = minutes;
+        if (minutosp > 30) {
+            minutosp = 0;
+            horasp++;
+        } else {
+            minutosp = 30;
+        }
+        float totalRedondeado = TARIFA * (horasp + (minutosp / 60.00f));
+
+        txtGanancia.setText("$" + String.format("%.2f", totalRedondeado) + " ($" + String.format("%.2f", total) + ")");
     }
 
     private void guardarActividad() {
