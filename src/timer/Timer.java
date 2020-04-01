@@ -29,9 +29,12 @@ import java.awt.event.WindowEvent;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class Timer extends javax.swing.JFrame {
 
+    public static Timer timerClass;
+    
     private javax.swing.Timer timer;
     private ITaskbarList3 list;
     private long lastTickTime = 0, tiempoPausado = 0, timeCuandoSePauso = 0;
@@ -47,7 +50,7 @@ public class Timer extends javax.swing.JFrame {
     private Actividad aActual;
     private float quincena = 0;
     public static final float TARIFA = 55.0f;
-    public static final String PATH = "C:\\Users\\ElMaps\\Documents\\Timer\\";
+    public static final String PATH = "C:\\Users\\52475\\Documents\\Timer\\";
 
     public Timer() throws ClassNotFoundException, UnsupportedEncodingException {
         setIconImage(new ImageIcon(Timer.class.getProtectionDomain().getClassLoader().getResource("timer.png")).getImage());
@@ -123,6 +126,8 @@ public class Timer extends javax.swing.JFrame {
                 refreshReloj(runningTime);
             }
         });
+        
+        timerClass = this;
     }
 
     private void crearArchivo() {
@@ -1048,28 +1053,36 @@ public class Timer extends javax.swing.JFrame {
     }//GEN-LAST:event_btnCargarActionPerformed
 
     private void btnCargarActActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCargarActActionPerformed
+        clickCargarActividad();
+    }//GEN-LAST:event_btnCargarActActionPerformed
+
+    public void clickCargarActividad() {
         if (!validarProyectoSeleccionado()) {
             return;
         }
         String value = cbActividades.getSelectedItem().toString();
         Actividad a = actividades.get(value);
         cargarActividad(a);
-    }//GEN-LAST:event_btnCargarActActionPerformed
-
+    }
+    
     private void btnGuardarActActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActActionPerformed
         guardarActividad();
     }//GEN-LAST:event_btnGuardarActActionPerformed
 
     private void btnNuevoActActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevoActActionPerformed
-        if (preguntar("¿Seguro que quieres crear una actividad?", pActual.getFullFormato())) {
+        nuevaActividad(true);
+    }//GEN-LAST:event_btnNuevoActActionPerformed
+
+    public void nuevaActividad(boolean preguntar) {
+        if (!preguntar || preguntar("¿Seguro que quieres crear una actividad?", pActual.getFullFormato())) {
             pActual.nuevaActividad(actividades, cbActividades, config);
             saveFile();
             String value = cbActividades.getSelectedItem().toString();
             Actividad a = actividades.get(value);
             cargarActividad(a);
         }
-    }//GEN-LAST:event_btnNuevoActActionPerformed
-
+    }
+    
     private void btnBorrarActActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBorrarActActionPerformed
         if (!validarActividadSeleccionada() || !validarProyectoSeleccionado()) {
             return;
@@ -1265,7 +1278,7 @@ public class Timer extends javax.swing.JFrame {
         textArea.setSize(textArea.getPreferredSize().width, textArea.getPreferredSize().height);
         int ret = JOptionPane.showConfirmDialog((Component) obj, new JScrollPane(textArea), title, JOptionPane.OK_OPTION);
         if (ret == 0) {
-            return textArea.getText();
+            return textArea.getText().replaceAll("\\\\Q", "").replaceAll("\\\\E", "").replaceAll("\\\\", "/").replaceAll(Pattern.quote("\\Q"), "");
         }
         return null;
     }
@@ -1310,6 +1323,13 @@ public class Timer extends javax.swing.JFrame {
         saveFile();
 
         msg("Proyecto " + p.nombre + " guardado.");
+        
+        pActual.cargar(actividades, cbActividades, config);
+        txtProyecto.setText(pActual.getFullFormato());
+        txtActividades.setText("Ninguna actividad seleccionada");
+        refreshReloj(0);
+        txtGanancia.setText("$0");
+        clickCargarActividad();
     }
 
     public void cargarActividad(Actividad a) {

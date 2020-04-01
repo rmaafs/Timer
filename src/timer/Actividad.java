@@ -140,7 +140,7 @@ public class Actividad {
         if (nuevo != null) {
             mensaje = Arrays.asList(nuevo.split("\n"));
             config.set(key + "mensaje", mensaje);
-            msg("Mensaje guardado con éxito.");
+            //msg("Mensaje guardado con éxito.");
             return true;
         }
         return false;
@@ -151,7 +151,7 @@ public class Actividad {
         if (nuevo != null) {
             descripcion = Arrays.asList(nuevo.split("\n"));
             config.set(key + "descripcion", descripcion);
-            msg("Descripción guardado con éxito.");
+            //msg("Descripción guardado con éxito.");
             return true;
         }
         return false;
@@ -238,7 +238,11 @@ public class Actividad {
         for (String s : mensaje) {
             str += s + "\n\n";
         }
-        str += "- " + linkPrincipal;
+        
+        if (!linkPrincipal.equals("") && !linkPrincipal.equals("s")) {
+            str += "- " + linkPrincipal;
+        }
+        
         str += barra;
 
         str += "Descripción:";

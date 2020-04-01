@@ -6,6 +6,7 @@ import java.util.List;
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import spigot.file.configuration.FileConfiguration;
+import static timer.Timer.timerClass;
 
 class Proyecto {
 
@@ -47,7 +48,7 @@ class Proyecto {
                 }
             }
         } else {
-            JOptionPane.showMessageDialog(null, "ATENCION: Este proyecto no tiene actividades.");
+            timerClass.nuevaActividad(false);
         }
     }
 
