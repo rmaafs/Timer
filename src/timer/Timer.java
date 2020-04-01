@@ -104,7 +104,9 @@ public class Timer extends javax.swing.JFrame {
                 cargarActividad(actividades.get(config.getInt("ultimo.actividad") + ""));
                 cbActividades.setSelectedItem(config.getInt("ultimo.actividad") + "");
 
-                txtProyecto.setText(pActual.getFullFormato());
+                String titulo = pActual.getFullFormato();
+                txtProyecto.setText(titulo.length() > 47 ? titulo.substring(0, 47) + "..." : titulo);
+                this.setTitle(titulo);
             }
 
         }
@@ -1046,7 +1048,9 @@ public class Timer extends javax.swing.JFrame {
         Proyecto p = proyectos.get(value);
         p.cargar(actividades, cbActividades, config);
         pActual = p;
-        txtProyecto.setText(pActual.getFullFormato());
+        String titulo = pActual.getFullFormato();
+        txtProyecto.setText(titulo.length() > 47 ? titulo.substring(0, 47) + "..." : titulo);
+        this.setTitle(titulo);
         txtActividades.setText("Ninguna actividad seleccionada");
         refreshReloj(0);
         txtGanancia.setText("$0");
@@ -1325,7 +1329,9 @@ public class Timer extends javax.swing.JFrame {
         msg("Proyecto " + p.nombre + " guardado.");
         
         pActual.cargar(actividades, cbActividades, config);
-        txtProyecto.setText(pActual.getFullFormato());
+        String titulo = pActual.getFullFormato();
+        txtProyecto.setText(titulo.length() > 47 ? titulo.substring(0, 47) + "..." : titulo);
+        this.setTitle(titulo);
         txtActividades.setText("Ninguna actividad seleccionada");
         refreshReloj(0);
         txtGanancia.setText("$0");
