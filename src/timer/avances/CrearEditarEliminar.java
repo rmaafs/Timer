@@ -14,8 +14,6 @@ public class CrearEditarEliminar {
     List<String> editados = new ArrayList<>();
     List<String> eliminados = new ArrayList<>();
     
-    List<String> deleteCustomText = new ArrayList<>();
-    
     String key;
 
     public CrearEditarEliminar(String key, FileConfiguration config) {
@@ -25,8 +23,6 @@ public class CrearEditarEliminar {
             editados = config.getStringList(key + "editado");
             eliminados = config.getStringList(key + "eliminado");
         }
-        deleteCustomText.add("All Files	");
-        deleteCustomText.add("C:/Users/52475/Documents/NetBeansProjects/Irgo/web/");
     }
     
     public int getCreados() {
@@ -44,9 +40,7 @@ public class CrearEditarEliminar {
     public boolean abrirCreados(javax.swing.JLabel txt) {
         String nuevo = textAreaDialog(null, getFormat(creados), "Creados");
         if (nuevo != null) {
-            for (String s : deleteCustomText) {
-                nuevo = nuevo.replaceAll(s, "");
-            }
+            nuevo = extractFromPath(nuevo);
             
             if (nuevo.length() == 0) {
                 creados = new ArrayList<>();
@@ -65,9 +59,7 @@ public class CrearEditarEliminar {
     public boolean abrirEditados(javax.swing.JLabel txt) {
         String nuevo = textAreaDialog(null, getFormat(editados), "Editados");
         if (nuevo != null) {
-            for (String s : deleteCustomText) {
-                nuevo = nuevo.replaceAll(s, "");
-            }
+            nuevo = extractFromPath(nuevo);
             
             if (nuevo.length() == 0) {
                 editados = new ArrayList<>();
@@ -86,9 +78,7 @@ public class CrearEditarEliminar {
     public boolean abrirEliminados(javax.swing.JLabel txt) {
         String nuevo = textAreaDialog(null, getFormat(eliminados), "Eliminados");
         if (nuevo != null) {
-            for (String s : deleteCustomText) {
-                nuevo = nuevo.replaceAll(s, "");
-            }
+            nuevo = extractFromPath(nuevo);
             
             if (nuevo.length() == 0) {
                 eliminados = new ArrayList<>();
@@ -138,5 +128,17 @@ public class CrearEditarEliminar {
             str.append(s).append("\n");
         }
         return str.toString();
+    }
+    
+    /**
+     * Función que elimina el PATH innecesario.
+     * @param path path copiado del archivo NetBeans
+     * @return Retorna el archivo eliminado C:/... solo dejando apartir de jsp/...
+     */
+    private String extractFromPath(String path) {
+        if (path.contains("NetBeansProjects") && path.contains("/web/")) {
+            return path.substring(path.indexOf("/web/") + 5, path.length());
+        }
+        return path;
     }
 }
