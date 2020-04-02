@@ -241,11 +241,13 @@ public class Actividad {
         
         if (!linkPrincipal.equals("") && !linkPrincipal.equals("s")) {
             str += "- " + linkPrincipal;
+        } else {
+            str = str.substring(0, str.length() - 2);//Eliminamos los saltos de línea
         }
         
         str += barra;
 
-        str += "Descripción:";
+        str += "**Descripción:**";
         for (String s : descripcion) {
             str += "\n\n- " + s + "";
         }
@@ -253,19 +255,19 @@ public class Actividad {
 
         if (archivos.isModificado()) {
             if (archivos.getCreados() > 0) {
-                str += "Archivos que cree:";
+                str += "**Archivos que creé:**";
                 str += archivos.getCreadosDocumentacion();
                 str += barra;
             }
 
             if (archivos.getEditados() > 0) {
-                str += "Archivos que edité:";
+                str += "**Archivos que edité:**";
                 str += archivos.getEditadosDocumentacion();
                 str += barra;
             }
 
             if (archivos.getEliminados() > 0) {
-                str += "Archivos que eliminé:";
+                str += "**Archivos que eliminé:**";
                 str += archivos.getEliminadosDocumentacion();
                 str += barra;
             }
@@ -273,19 +275,19 @@ public class Actividad {
 
         if (querys.isModificado()) {
             if (querys.getCreados() > 0) {
-                str += "Querys que cree:";
+                str += "**Querys que creé:**";
                 str += querys.getCreadosDocumentacion();
                 str += barra;
             }
 
             if (querys.getEditados() > 0) {
-                str += "Querys que edité:";
+                str += "**Querys que edité:**";
                 str += querys.getEditadosDocumentacion();
                 str += barra;
             }
 
             if (querys.getEliminados() > 0) {
-                str += "Querys que eliminé:";
+                str += "**Querys que eliminé:**";
                 str += querys.getEliminadosDocumentacion();
                 str += barra;
             }
@@ -293,19 +295,19 @@ public class Actividad {
 
         if (procesos.isModificado()) {
             if (procesos.getCreados() > 0) {
-                str += "Procesos que cree:";
+                str += "**Procesos que creé:**";
                 str += procesos.getCreadosDocumentacion();
                 str += barra;
             }
 
             if (procesos.getEditados() > 0) {
-                str += "Procesos que edité:";
+                str += "**Procesos que edité:**";
                 str += procesos.getEditadosDocumentacion();
                 str += barra;
             }
 
             if (procesos.getEliminados() > 0) {
-                str += "Procesos que eliminé:";
+                str += "**Procesos que eliminé:**";
                 str += procesos.getEliminadosDocumentacion();
                 str += barra;
             }
@@ -313,19 +315,19 @@ public class Actividad {
 
         if (acciones.isModificado()) {
             if (acciones.getCreados() > 0) {
-                str += "Acciones que cree:";
+                str += "**Acciones que creé:**";
                 str += acciones.getCreadosDocumentacion();
                 str += barra;
             }
 
             if (acciones.getEditados() > 0) {
-                str += "Acciones que edité:";
+                str += "**Acciones que edité:**";
                 str += acciones.getEditadosDocumentacion();
                 str += barra;
             }
 
             if (acciones.getEliminados() > 0) {
-                str += "Acciones que eliminé:";
+                str += "**Acciones que eliminé:**";
                 str += acciones.getEliminadosDocumentacion();
                 str += barra;
             }
@@ -333,25 +335,25 @@ public class Actividad {
 
         if (datos.isModificado()) {
             if (datos.getCreados() > 0) {
-                str += "Datos que cree:";
+                str += "**Datos que cree:**";
                 str += datos.getCreadosDocumentacion();
                 str += barra;
             }
 
             if (datos.getEditados() > 0) {
-                str += "Datos que edité:";
+                str += "**Datos que edité:**";
                 str += datos.getEditadosDocumentacion();
                 str += barra;
             }
 
             if (datos.getEliminados() > 0) {
-                str += "Datos que eliminé:";
+                str += "**Datos que eliminé:**";
                 str += datos.getEliminadosDocumentacion();
                 str += barra;
             }
         }
 
-        str += "Tiempo que tardé en leer explicación, analizar, entender, ejecutar y documentar:\n\n";
+        str += "**Tiempo que tardé en leer explicación, analizar, entender, ejecutar y documentar:**\n\n";
         if (segundos > 0) {
             segundos = 0;
             minutos++;
@@ -362,7 +364,7 @@ public class Actividad {
             minutos = 0;
             horas++;
         }
-        str += "- " + (horas > 0 ? horas + "h " : "") + (minutos > 0 ? minutos + "m" : "") + " / (Sin redondear " + (hours > 0 ? hours + "h " : "") + minutes + "m)";
+        str += "- " + (horas > 0 ? horas + "h " : "") + (minutos > 0 ? minutos + "m" : "")/* + " / (Sin redondear " + (hours > 0 ? hours + "h " : "") + minutes + "m)"*/;
 
         return str;
     }
