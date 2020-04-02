@@ -216,7 +216,7 @@ public class Actividad {
         return ganancia;
     }
 
-    public String getDocumentacion() {
+    public String getDocumentacion(Proyecto pActual) {
         Duration duration = Duration.ofMillis(-tiempo);
         long hours = duration.toHours();
         duration = duration.minusHours(hours);
@@ -238,13 +238,21 @@ public class Actividad {
         for (String s : mensaje) {
             str += s + "\n\n";
         }
-        
+
         if (!linkPrincipal.equals("") && !linkPrincipal.equals("s")) {
             str += "- " + linkPrincipal;
         } else {
             str = str.substring(0, str.length() - 2);//Eliminamos los saltos de línea
         }
+
+        if (pActual.link != null && !pActual.link.equals("trello.com")) {
+            str += "\n\n**Trello:** " + pActual.link;
+        }
         
+        if (pActual.ticket != null && !pActual.ticket.equals("sipa.tickets")) {
+            str += "\n\n**Ticket de SIPA:** " + pActual.ticket;
+        }
+
         str += barra;
 
         str += "**Descripción:**";

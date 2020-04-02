@@ -1236,7 +1236,7 @@ public class Timer extends javax.swing.JFrame {
 
     private void btnDocumentacionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDocumentacionActionPerformed
         String str = "";
-        str += aActual.getDocumentacion();
+        str += aActual.getDocumentacion(pActual);
         copiarClipBoard(str);
     }//GEN-LAST:event_btnDocumentacionActionPerformed
 
