@@ -230,7 +230,7 @@ public class Actividad {
         horas = (int) hours;
 
         String str = "";
-        String barra = "\n\n-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~\n\n";
+        String barra = "\n\n---\n\n";
         if (linkPrincipal.equals("")) {
             linkPrincipal = JOptionPane.showInputDialog("Dame el link principal donde se verán los cambios:");
         }
