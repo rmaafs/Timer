@@ -9,13 +9,13 @@ import static timer.Timer.msg;
 import static timer.Timer.textAreaDialog;
 
 public class CrearEditarEliminar {
-
+    
     List<String> creados = new ArrayList<>();
     List<String> editados = new ArrayList<>();
     List<String> eliminados = new ArrayList<>();
     
     String key;
-
+    
     public CrearEditarEliminar(String key, FileConfiguration config) {
         this.key = key;
         if (config.contains(key)) {
@@ -36,7 +36,7 @@ public class CrearEditarEliminar {
     public int getEliminados() {
         return eliminados.size();
     }
-
+    
     public boolean abrirCreados(javax.swing.JLabel txt) {
         String nuevo = textAreaDialog(null, getFormat(creados), "Creados");
         if (nuevo != null) {
@@ -129,16 +129,24 @@ public class CrearEditarEliminar {
         }
         return str.toString();
     }
-    
+
     /**
      * Función que elimina el PATH innecesario.
+     *
      * @param path path copiado del archivo NetBeans
-     * @return Retorna el archivo eliminado C:/... solo dejando apartir de jsp/...
+     * @return Retorna el archivo eliminado C:/... solo dejando apartir de
+     * jsp/...
      */
-    private String extractFromPath(String path) {
-        if (path.contains("NetBeansProjects") && path.contains("/web/")) {
-            return path.substring(path.indexOf("/web/") + 5, path.length());
+    private String extractFromPath(String fullPath) {
+        StringBuilder str = new StringBuilder();
+        
+        for (String path : fullPath.split("\n")) {
+            if (path.contains("NetBeansProjects") && path.contains("/web/")) {
+                path = path.substring(path.indexOf("/web/") + 5, path.length());
+            }
+            str.append(path).append("\n");
         }
-        return path;
+        
+        return str.toString();
     }
 }
