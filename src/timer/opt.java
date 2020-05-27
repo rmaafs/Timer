@@ -1,8 +1,12 @@
 package timer;
 
 public class opt {
-
+    
     public static void main(String[] args) {
-        Timer.main(args);
+        nuevaVentana();
+    }
+    
+    public static void nuevaVentana() {
+        Timer.main(new String[]{});
     }
 }

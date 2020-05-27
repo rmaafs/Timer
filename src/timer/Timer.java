@@ -26,8 +26,11 @@ import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -45,7 +48,7 @@ import timer.avances.RenglonXLS;
 public class Timer extends javax.swing.JFrame {
 
     public static Timer timerClass;
-    
+
     private javax.swing.Timer timer;
     private ITaskbarList3 list;
     private long lastTickTime = 0, tiempoPausado = 0, timeCuandoSePauso = 0;
@@ -139,7 +142,7 @@ public class Timer extends javax.swing.JFrame {
                 refreshReloj(runningTime);
             }
         });
-        
+
         timerClass = this;
     }
 
@@ -1093,7 +1096,7 @@ public class Timer extends javax.swing.JFrame {
         Actividad a = actividades.get(value);
         cargarActividad(a);
     }
-    
+
     private void btnGuardarActActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActActionPerformed
         guardarActividad();
     }//GEN-LAST:event_btnGuardarActActionPerformed
@@ -1111,7 +1114,7 @@ public class Timer extends javax.swing.JFrame {
             cargarActividad(a);
         }
     }
-    
+
     private void btnBorrarActActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBorrarActActionPerformed
         if (!validarActividadSeleccionada() || !validarProyectoSeleccionado()) {
             return;
@@ -1279,11 +1282,24 @@ public class Timer extends javax.swing.JFrame {
 
     private void btnReiniciarQuincenaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReiniciarQuincenaActionPerformed
         if (preguntar("¿Estas seguro de reiniciar esta quincena?", "")) {
-            quincena = 0;
+            generateExcel();
+
+            try {
+                copy(new FileInputStream(PATH + "save.yml"), new File(PATH + "/Historial/save_" + new SimpleDateFormat("yyyy-MM-dd").format(new Date()) + ".yml"));
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(Timer.class.getName()).log(Level.SEVERE, null, ex);
+                return;
+            }
+
+            new File(PATH + "save.yml").delete();
+
+ /*quincena = 0;
             config.set("quincena.total", quincena);
             config.set("quincena.actividades", null);
             saveFile();
-            txtTotalGanancia.setText("$" + quincena);
+            txtTotalGanancia.setText("$" + quincena);*/
+            this.dispose();
+            opt.nuevaVentana();
         }
     }//GEN-LAST:event_btnReiniciarQuincenaActionPerformed
 
@@ -1296,11 +1312,17 @@ public class Timer extends javax.swing.JFrame {
     }//GEN-LAST:event_btnTicketActionPerformed
 
     private void btnGenerarExcelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerarExcelActionPerformed
-        if (!preguntar("¿Seguro quieres generar un excel de la quincena?", "¿Seguro?")) return;
-        
+        generateExcel();
+    }//GEN-LAST:event_btnGenerarExcelActionPerformed
+
+    private void generateExcel() {
+        if (!preguntar("¿Deseas generar un excel?", "Excel reporte quincenal")) {
+            return;
+        }
+
         XSSFWorkbook workbook = new XSSFWorkbook();
         XSSFSheet sheet = workbook.createSheet("Java Books");
-        
+
         HashMap<String, Proyecto> proyectos = new HashMap<>();
         for (String s : config.getKeys(false)) {
             if (s.equals("ultimo") || s.equals("quincena")) {
@@ -1312,18 +1334,18 @@ public class Timer extends javax.swing.JFrame {
             p.cargarToRAM(config);
             proyectos.put(numTicket + "", p);
         }
-        
+
         //Primero creamos una lista de proyectos por cada ambiente
         HashMap<String, List<Proyecto>> ambientes = new HashMap<>();
         for (Map.Entry entry : proyectos.entrySet()) {
             Proyecto p = (Proyecto) entry.getValue();
-            
+
             if (!ambientes.containsKey(p.ambiente)) {
                 ambientes.put(p.ambiente, new ArrayList<>());
             }
             ambientes.get(p.ambiente).add(p);
         }
-        
+
         //double totalGanancia = 0;
         List<List<RenglonXLS>> bookData = new ArrayList<>();
         //Object[][] bookData = {};
@@ -1331,14 +1353,14 @@ public class Timer extends javax.swing.JFrame {
             String ambiente = (String) entry.getKey();
             List<Proyecto> listaProyectos = (ArrayList) entry.getValue();
             List<RenglonXLS> arrAmbiente = new ArrayList<>();
-            
+
             //double gananciaPorAmbiente = 0;
             for (Proyecto p : listaProyectos) {
                 int horas = 0, minutos = 0;
                 double ganancia = 0;
                 for (Actividad act : p.actividades) {
                     ganancia += act.ganancia;
-                    
+
                     float horasp = act.horas;
                     float minutosp = act.minutos;
                     if (minutosp > 30) {
@@ -1347,35 +1369,34 @@ public class Timer extends javax.swing.JFrame {
                     } else {
                         minutosp = 30;
                     }
-                    
+
                     horas += horasp;
                     minutos += minutosp;
-                    
+
                 }
                 //gananciaPorAmbiente += ganancia;
                 double hrs = horas + (minutos > 0 ? .5 : 0);
                 arrAmbiente.add(new RenglonXLS(ambiente, p.numero, p.link, hrs));
-                
+
                 //System.out.println(ambiente + " > " + p.nombre + ": " + horas + ":" + minutos + " $" + ganancia);
             }
             //totalGanancia += gananciaPorAmbiente;
             bookData.add(arrAmbiente);
-            
+
             //System.out.println("Ganado en " + ambiente + ": $" + gananciaPorAmbiente);
         }
         //System.out.println("Total ganado: $" + totalGanancia);
-        
-        
+
         int rowCount = 0;
         int columnCount = 0;
         float totalTiempo = 0;
-        
+
         Row row = sheet.createRow(0);
         row.createCell(0).setCellValue("AMBIENTE");
         row.createCell(1).setCellValue("NÚMERO");
         row.createCell(2).setCellValue("TIEMPO");
         row.createCell(3).setCellValue("LINK");
-        
+
         for (int i = 0; i < bookData.size(); i++) {
             for (int j = 0; j < bookData.get(i).size(); j++) {
                 row = sheet.createRow(++rowCount);
@@ -1383,31 +1404,31 @@ public class Timer extends javax.swing.JFrame {
                 RenglonXLS field = bookData.get(i).get(j);
                 Cell cell = row.createCell(columnCount++);
                 cell.setCellValue(field.ambiente);
-                
+
                 cell = row.createCell(columnCount++);
                 cell.setCellValue(field.numero);
-                
+
                 cell = row.createCell(columnCount++);
                 cell.setCellValue(field.tiempo);
-                
+
                 cell = row.createCell(columnCount++);
                 cell.setCellValue(field.link);
-                
+
                 totalTiempo += field.tiempo;
             }
         }
-        
+
         row = sheet.createRow(++rowCount);
         row.createCell(2).setCellValue(totalTiempo);
         row.createCell(3).setCellValue(totalTiempo * 55);
-         
+
         try {
             FileOutputStream outputStream = new FileOutputStream(PATH + "Q_rmaafs_" + new SimpleDateFormat("yyyy-MM-dd").format(new Date()) + ".xlsx");
             workbook.write(outputStream);
         } catch (Exception ex) {
             Logger.getLogger(Timer.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }//GEN-LAST:event_btnGenerarExcelActionPerformed
+    }
 
     public static String textAreaDialog(Object obj, String text, String title) {
         if (title == null) {
@@ -1466,7 +1487,7 @@ public class Timer extends javax.swing.JFrame {
         saveFile();
 
         msg("Proyecto " + p.nombre + " guardado.");
-        
+
         pActual.cargar(actividades, cbActividades, config);
         String titulo = pActual.getFullFormato();
         txtProyecto.setText(titulo.length() > 47 ? titulo.substring(0, 47) + "..." : titulo);
@@ -1575,6 +1596,21 @@ public class Timer extends javax.swing.JFrame {
         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
         clipboard.setContents(stringSelection, null);
         msg("Texto copiado en el portapapeles.");
+    }
+
+    private void copy(InputStream in, File file) {
+        try {
+            OutputStream out = new FileOutputStream(file);
+            byte[] buf = new byte['?'];
+            int len;
+            while ((len = in.read(buf)) > 0) {
+                out.write(buf, 0, len);
+            }
+            out.close();
+            in.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
