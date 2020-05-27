@@ -51,6 +51,29 @@ class Proyecto {
             timerClass.nuevaActividad(false);
         }
     }
+    
+    public void cargarToRAM(FileConfiguration config) {
+        String key = numero + ".";
+        numero = config.getInt(key + "numero");
+        anio = config.getInt(key + "anio");
+        nombre = config.getString(key + "nombre");
+        ambiente = config.getString(key + "ambiente");
+        link = config.getString(key + "link");
+        ticket = config.getString(key + "ticket");
+        if (config.contains(key + "actividades")) {
+            for (String act : config.getConfigurationSection(key + "actividades").getKeys(false)) {
+                key = numero + ".";
+                key = key + "actividades." + act + ".";
+                try {
+                    Actividad a = new Actividad(key, act, config);
+                    System.out.println("Actividad " + a.id + " cargada.");
+                    actividades.add(a);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
 
     public void nuevaActividad(HashMap<String, Actividad> hashAct, JComboBox<String> cbActividades, FileConfiguration config) {
         String key = numero + ".";

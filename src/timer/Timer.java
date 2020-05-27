@@ -26,10 +26,21 @@ import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.net.URI;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import timer.avances.RenglonXLS;
 
 public class Timer extends javax.swing.JFrame {
 
@@ -244,6 +255,7 @@ public class Timer extends javax.swing.JFrame {
         btnReiniciarQuincena = new javax.swing.JButton();
         btnTrello = new javax.swing.JButton();
         btnTicket = new javax.swing.JButton();
+        btnGenerarExcel = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -863,6 +875,13 @@ public class Timer extends javax.swing.JFrame {
             }
         });
 
+        btnGenerarExcel.setText("Generar Excel");
+        btnGenerarExcel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGenerarExcelActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -897,21 +916,25 @@ public class Timer extends javax.swing.JFrame {
                         .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jPanel5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(btnDocumentacion, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(btnEditarMensaje, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(btnEditarDescripcion, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(btnTerminarActividad, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-                    .addComponent(jPanel8, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jPanel5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addComponent(btnDocumentacion, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(btnEditarMensaje, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addComponent(btnEditarDescripcion, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(btnTerminarActividad, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                            .addComponent(jPanel8, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(btnGenerarExcel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -957,6 +980,8 @@ public class Timer extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(btnGenerarExcel)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                     .addComponent(btnEditarMensaje)
                                     .addComponent(btnEditarDescripcion))
@@ -1270,6 +1295,120 @@ public class Timer extends javax.swing.JFrame {
         openURL(pActual.ticket);
     }//GEN-LAST:event_btnTicketActionPerformed
 
+    private void btnGenerarExcelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerarExcelActionPerformed
+        if (!preguntar("¿Seguro quieres generar un excel de la quincena?", "¿Seguro?")) return;
+        
+        XSSFWorkbook workbook = new XSSFWorkbook();
+        XSSFSheet sheet = workbook.createSheet("Java Books");
+        
+        HashMap<String, Proyecto> proyectos = new HashMap<>();
+        for (String s : config.getKeys(false)) {
+            if (s.equals("ultimo") || s.equals("quincena")) {
+                continue;
+            }
+            int numTicket = Integer.valueOf(s);
+            String nombreTicket = config.getString(s + ".nombre");
+            Proyecto p = new Proyecto(numTicket, nombreTicket);
+            p.cargarToRAM(config);
+            proyectos.put(numTicket + "", p);
+        }
+        
+        //Primero creamos una lista de proyectos por cada ambiente
+        HashMap<String, List<Proyecto>> ambientes = new HashMap<>();
+        for (Map.Entry entry : proyectos.entrySet()) {
+            Proyecto p = (Proyecto) entry.getValue();
+            
+            if (!ambientes.containsKey(p.ambiente)) {
+                ambientes.put(p.ambiente, new ArrayList<>());
+            }
+            ambientes.get(p.ambiente).add(p);
+        }
+        
+        //double totalGanancia = 0;
+        List<List<RenglonXLS>> bookData = new ArrayList<>();
+        //Object[][] bookData = {};
+        for (Map.Entry entry : ambientes.entrySet()) {
+            String ambiente = (String) entry.getKey();
+            List<Proyecto> listaProyectos = (ArrayList) entry.getValue();
+            List<RenglonXLS> arrAmbiente = new ArrayList<>();
+            
+            //double gananciaPorAmbiente = 0;
+            for (Proyecto p : listaProyectos) {
+                int horas = 0, minutos = 0;
+                double ganancia = 0;
+                for (Actividad act : p.actividades) {
+                    ganancia += act.ganancia;
+                    
+                    float horasp = act.horas;
+                    float minutosp = act.minutos;
+                    if (minutosp > 30) {
+                        minutosp = 0;
+                        horasp++;
+                    } else {
+                        minutosp = 30;
+                    }
+                    
+                    horas += horasp;
+                    minutos += minutosp;
+                    
+                }
+                //gananciaPorAmbiente += ganancia;
+                double hrs = horas + (minutos > 0 ? .5 : 0);
+                arrAmbiente.add(new RenglonXLS(ambiente, p.numero, p.link, hrs));
+                
+                //System.out.println(ambiente + " > " + p.nombre + ": " + horas + ":" + minutos + " $" + ganancia);
+            }
+            //totalGanancia += gananciaPorAmbiente;
+            bookData.add(arrAmbiente);
+            
+            //System.out.println("Ganado en " + ambiente + ": $" + gananciaPorAmbiente);
+        }
+        //System.out.println("Total ganado: $" + totalGanancia);
+        
+        
+        int rowCount = 0;
+        int columnCount = 0;
+        float totalTiempo = 0;
+        
+        Row row = sheet.createRow(0);
+        row.createCell(0).setCellValue("AMBIENTE");
+        row.createCell(1).setCellValue("NÚMERO");
+        row.createCell(2).setCellValue("TIEMPO");
+        row.createCell(3).setCellValue("LINK");
+        
+        for (int i = 0; i < bookData.size(); i++) {
+            for (int j = 0; j < bookData.get(i).size(); j++) {
+                row = sheet.createRow(++rowCount);
+                columnCount = 0;
+                RenglonXLS field = bookData.get(i).get(j);
+                Cell cell = row.createCell(columnCount++);
+                cell.setCellValue(field.ambiente);
+                
+                cell = row.createCell(columnCount++);
+                cell.setCellValue(field.numero);
+                
+                cell = row.createCell(columnCount++);
+                cell.setCellValue(field.tiempo);
+                
+                cell = row.createCell(columnCount++);
+                cell.setCellValue(field.link);
+                
+                totalTiempo += field.tiempo;
+            }
+        }
+        
+        row = sheet.createRow(++rowCount);
+        row.createCell(2).setCellValue(totalTiempo);
+        row.createCell(3).setCellValue(totalTiempo * 55);
+         
+        try {
+            FileOutputStream outputStream = new FileOutputStream(PATH + "Q_rmaafs_" + new SimpleDateFormat("yyyy-MM-dd").format(new Date()) + ".xlsx");
+            workbook.write(outputStream);
+        } catch (Exception ex) {
+            Logger.getLogger(Timer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnGenerarExcelActionPerformed
+
     public static String textAreaDialog(Object obj, String text, String title) {
         if (title == null) {
             title = "Your input";
@@ -1506,6 +1645,7 @@ public class Timer extends javax.swing.JFrame {
     private javax.swing.JButton btnDocumentacion;
     private javax.swing.JButton btnEditarDescripcion;
     private javax.swing.JButton btnEditarMensaje;
+    private javax.swing.JButton btnGenerarExcel;
     private javax.swing.JButton btnGuardarAct;
     private javax.swing.JButton btnNuevo;
     private javax.swing.JButton btnNuevoAct;
